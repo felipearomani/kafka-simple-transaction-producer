@@ -2,6 +2,8 @@ package com.github.felipearomani.simplekafkaproducer;
 
 import com.github.felipearomani.simplekafkaproducer.models.PurchaseKey;
 import com.github.felipearomani.simplekafkaproducer.partitioners.PurchaseKeyPartitioner;
+import com.github.felipearomani.simplekafkaproducer.serializers.PurchaseKeySerializer;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -38,7 +40,7 @@ public class ProducerSimpleTransaction {
             });
 
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
+            throw new RuntimeException(ex);
         }
 
     }
@@ -46,7 +48,7 @@ public class ProducerSimpleTransaction {
     private Properties getProducerConfig() {
         Properties config = new Properties();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, PurchaseKeySerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.ACKS_CONFIG, "1");
         config.put(ProducerConfig.RETRIES_CONFIG,  "3");
