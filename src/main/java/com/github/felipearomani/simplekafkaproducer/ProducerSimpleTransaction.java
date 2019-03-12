@@ -7,12 +7,14 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 public class ProducerSimpleTransaction {
 
@@ -33,11 +35,14 @@ public class ProducerSimpleTransaction {
                     new ProducerRecord<>("transactions", key, "{\"item\":\"book\",\"price\":10.99}");
 
 
-            producer.send(record, (recordMetadata, error) -> {
+            Future<RecordMetadata> resultFuture = producer.send(record, (recordMetadata, error) -> {
                 if (error != null) {
                     logger.error(error.getMessage());
                 }
+
+                logger.info(recordMetadata.toString());
             });
+
 
         } catch (Exception ex) {
             throw new RuntimeException(ex);
